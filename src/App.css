@@ -1,0 +1,24 @@
+@reference "./index.css";
+
+@layer components {
+    /*
+      https://www.w3schools.com/howto/howto_js_rangeslider.asp
+      https://github.com/tailwindlabs/tailwindcss/discussions/8748
+      https://www.sitepoint.com/css-custom-range-slider/
+    */
+    .input-range-colour {
+        @apply appearance-none bg-transparent outline-none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+    }
+
+    .input-range-colour::-webkit-slider-thumb {
+        @apply outline-base-50 h-3 w-3 cursor-pointer appearance-none rounded-full outline-4 bg-transparent;
+        -webkit-appearance: none;
+    }
+
+    .input-range-colour::-moz-range-thumb {
+        @apply border-base-50 h-3 w-3 cursor-pointer appearance-none rounded-full border-4 bg-transparent;
+        -moz-appearance: none;
+    }
+}
