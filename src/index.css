@@ -1,69 +1,42 @@
+@import "./NotoSans.css";
+@import "./MaterialSymbolsOutlined.css";
+
+@import "tailwindcss";
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --base-hue: 32;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+@theme inline {
+  --color-*: initial;
+  /* Maybe change back to 99% L ? */
+  --color-base-50: oklch(0.95 0.02 var(--base-hue));
+  --color-base-100: oklch(0.9 0.05 var(--base-hue));
+  --color-base-200: oklch(0.8 0.1 var(--base-hue));
+  --color-base-300: oklch(0.72 0.17 var(--base-hue));
+  --color-base-400: oklch(0.66 0.22 var(--base-hue));
+  --color-base-500: oklch(0.5 0.18 var(--base-hue));
+  --color-base-600: oklch(0.39 0.14 var(--base-hue));
+  --color-base-700: oklch(0.28 0.1 var(--base-hue));
+  --color-base-800: oklch(0.14 0.05 var(--base-hue));
+  --color-base-900: oklch(0.09 0.03 var(--base-hue));
+  --color-base-950: oklch(0.06 0.02 var(--base-hue));
+
+  --color-blue-500: oklch(0.5 0.17 256);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    @apply bg-base-50 text-base-950 dark:bg-base-950 dark:text-base-50 font-[Noto_Sans];
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+
+    /* Leseliste:
+       https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth
+       https://usabilitypost.com/2012/11/05/stop-fixing-font-smoothing/ */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
