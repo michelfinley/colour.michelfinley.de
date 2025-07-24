@@ -11,6 +11,7 @@ import {
   modeRgb,
   nearest,
   type Oklch,
+  random,
   type Rgb,
   toGamut,
   useMode as culoriUseMode,
@@ -55,6 +56,8 @@ export function buildForCSS(color: Oklch): string {
 export const toRgb = toGamut("rgb", COLOR_FN);
 
 export const toHsl = toGamut("hsl", COLOR_FN);
+
+export const toP3 = toGamut("p3", COLOR_FN);
 
 export const toOklch = toGamut("oklch", COLOR_FN);
 
@@ -120,3 +123,7 @@ export function getSpace(color: Color): Space {
 const namedColors = Object.keys(colorsNamed);
 export const nearestNamedColor = (color: Color) =>
   nearest(namedColors)(color)[0];
+
+export function randomOklch(): Oklch {
+  return toOklch(toP3(random("oklch", { l: [0.2, 0.8], c: [0.02, 0.4] })));
+}

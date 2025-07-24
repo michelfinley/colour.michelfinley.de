@@ -13,6 +13,7 @@ import {
   formatOklch,
   toOklch,
   nearestNamedColor,
+  randomOklch,
 } from "./colour.tsx";
 import { p3_support } from "./p3_support.tsx";
 import { PanelRightOpen } from "lucide-react";
@@ -39,13 +40,7 @@ function App() {
     }
   };
 
-  const [currentColour, setCurrentColour] = useState<Oklch>({
-    alpha: 1,
-    l: 0.72,
-    c: 0.17,
-    h: 32,
-    mode: "oklch",
-  });
+  const [currentColour, setCurrentColour] = useState<Oklch>(randomOklch());
 
   function updateColour(colour: Partial<Oklch>) {
     setCurrentColour((prevState) => {
