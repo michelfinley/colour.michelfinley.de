@@ -2,13 +2,15 @@
 
 import {
   type Color,
+  colorsNamed,
+  type Hsl,
   inGamut,
   modeHsl,
   modeOklch,
   modeP3,
   modeRgb,
+  nearest,
   type Oklch,
-  parse as coloriParse,
   type Rgb,
   toGamut,
   useMode as culoriUseMode,
@@ -16,14 +18,7 @@ import {
 
 import { p3_support } from "./p3_support.tsx";
 
-export interface OkLCHColor {
-  l: number;
-  c: number;
-  h: number;
-  alpha?: number;
-}
-
-export type { Rgb } from "culori/fn";
+export type { Rgb, Oklch };
 
 export const oklch = culoriUseMode(modeOklch);
 export const rgb = culoriUseMode(modeRgb);
@@ -49,40 +44,19 @@ export function inRGB(color: Color): boolean {
 }
 export const inP3 = inGamut("p3");
 
-export function build(color: OkLCHColor): Oklch {
-  return {
-    alpha: color.alpha ? color.alpha : 1,
-    c: color.c,
-    h: color.h,
-    l: color.l,
-    mode: COLOR_FN,
-  };
-}
-
-export function buildForCSS(color: OkLCHColor): string {
+export function buildForCSS(color: Oklch): string {
   if (p3_support) {
-    return formatOklch(build(color));
+    return formatOklch(color);
   } else {
-    return formatRgb(toRgb(build(color)));
+    return formatRgb(toRgb(color));
   }
-}
-
-export function parse(value: string): Color | undefined {
-  return coloriParse(value.trim());
-}
-
-export function parseAnything(value: string): Color | undefined {
-  value = value.replace(/\s*;\s*$/, "");
-  if (/^[\w-]+:\s*(#\w+|\w+\([^)]+\))$/.test(value)) {
-    value = value.replace(/^[\w-]+:\s*/, "");
-  }
-  if (/^\s*[\d.]+%?\s+[\d.]+\s+[\d.]+\s*$/.test(value)) {
-    value = `${COLOR_FN}(${value})`;
-  }
-  return parse(value);
 }
 
 export const toRgb = toGamut("rgb", COLOR_FN);
+
+export const toHsl = toGamut("hsl", COLOR_FN);
+
+export const toOklch = toGamut("oklch", COLOR_FN);
 
 export function formatRgb(color: Rgb): string {
   const r = Math.round(25500 * color.r) / 100;
@@ -93,6 +67,15 @@ export function formatRgb(color: Rgb): string {
   } else {
     return `rgb(${r}, ${g}, ${b})`;
   }
+}
+
+export function formatHsl(color: Hsl): string {
+  const { alpha, h, s, l } = color;
+  let postfix = "";
+  if (typeof alpha !== "undefined" && alpha < 1) {
+    postfix = ` / ${clean(100 * alpha)}%`;
+  }
+  return `hsl(${clean(h ? h : 0, 4)} ${clean(s ? s * 100 : 100, 4)} ${clean(l ? l * 100 : 100, 4)}${postfix})`;
 }
 
 export function formatOklch(color: Oklch): string {
@@ -110,10 +93,6 @@ export function clean(value: number, precision = 2): number {
     Math.round(parseFloat((value * 10 ** precision).toFixed(precision))) /
     10 ** precision
   );
-}
-
-export function isHexNotation(value: string): boolean {
-  return /^#?([\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i.test(value);
 }
 
 export type Space = number;
@@ -138,4 +117,6 @@ export function getSpace(color: Color): Space {
   }
 }
 
-export type GetSpace = typeof getSpace;
+const namedColors = Object.keys(colorsNamed);
+export const nearestNamedColor = (color: Color) =>
+  nearest(namedColors)(color)[0];
