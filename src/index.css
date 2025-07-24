@@ -1,5 +1,4 @@
 @import "./NotoSans.css";
-@import "./MaterialSymbolsOutlined.css";
 
 @import "tailwindcss";
 
@@ -7,27 +6,31 @@
   --base-hue: 32;
 }
 
-@theme inline {
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+@theme inline static {
   --color-*: initial;
-  /* Maybe change back to 99% L ? */
-  --color-base-50: oklch(0.95 0.02 var(--base-hue));
-  --color-base-100: oklch(0.9 0.05 var(--base-hue));
-  --color-base-200: oklch(0.8 0.1 var(--base-hue));
-  --color-base-300: oklch(0.72 0.17 var(--base-hue));
-  --color-base-400: oklch(0.66 0.22 var(--base-hue));
-  --color-base-500: oklch(0.5 0.18 var(--base-hue));
-  --color-base-600: oklch(0.39 0.14 var(--base-hue));
-  --color-base-700: oklch(0.28 0.1 var(--base-hue));
-  --color-base-800: oklch(0.14 0.05 var(--base-hue));
-  --color-base-900: oklch(0.09 0.03 var(--base-hue));
-  --color-base-950: oklch(0.06 0.02 var(--base-hue));
 
   --color-blue-500: oklch(0.5 0.17 256);
+
+  --color-white: oklch(0.95 0 0);
+  --color-black: oklch(0.06 0 0);
 }
 
 @layer base {
   :root {
-    @apply bg-base-50 text-base-950 dark:bg-base-950 dark:text-base-50 font-[Noto_Sans];
+    @apply bg-white text-black dark:bg-black dark:text-white font-[Noto_Sans];
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -38,12 +41,4 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
-
-.material-symbols {
-  font-variation-settings:
-    "FILL" 1,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 24;
 }

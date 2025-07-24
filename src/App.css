@@ -1,24 +1,59 @@
 @reference "./index.css";
 
 @layer components {
-    /*
+  /*
       https://www.w3schools.com/howto/howto_js_rangeslider.asp
       https://github.com/tailwindlabs/tailwindcss/discussions/8748
       https://www.sitepoint.com/css-custom-range-slider/
     */
-    .input-range-colour {
-        @apply appearance-none bg-transparent outline-none;
-        -moz-appearance: none;
-        -webkit-appearance: none;
+  .input-range-colour {
+    @apply m-2 h-5 w-128 appearance-none rounded-full bg-transparent outline-none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html */
+
+  .input-range-colour::-webkit-slider-thumb {
+    @apply h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-white bg-transparent shadow-sm shadow-black transition-transform duration-200;
+    -webkit-appearance: none;
+  }
+
+  .input-range-colour::-moz-range-thumb {
+    @apply h-4 w-4 cursor-pointer appearance-none rounded-full border-2 border-white bg-transparent shadow-sm shadow-black transition-transform duration-200;
+    -moz-appearance: none;
+  }
+
+  .input-range-colour:focus::-moz-range-thumb {
+    @apply scale-110 shadow-[0_0_10px] shadow-white outline-2 outline-white;
+  }
+
+  .input-range-colour:focus::-webkit-slider-thumb {
+    @apply scale-110 shadow-[0_0_10px] shadow-white outline-2 outline-white;
+  }
+
+  .main-container {
+    @apply relative;
+
+    --background: #000000;
+
+    &::before,
+    &::after {
+      @apply absolute top-0 h-8 w-8 bg-transparent;
     }
 
-    .input-range-colour::-webkit-slider-thumb {
-        @apply outline-base-50 h-3 w-3 cursor-pointer appearance-none rounded-full outline-4 bg-transparent;
-        -webkit-appearance: none;
+    &::before {
+      content: "";
+      left: -32px;
+      border-top-right-radius: 50%;
+      box-shadow: 8px -8px 0 0 var(--background);
     }
 
-    .input-range-colour::-moz-range-thumb {
-        @apply border-base-50 h-3 w-3 cursor-pointer appearance-none rounded-full border-4 bg-transparent;
-        -moz-appearance: none;
+    &::after {
+      right: -32px;
+      content: "";
+      border-top-left-radius: 50%;
+      box-shadow: -8px -8px 0 0 var(--background);
     }
+  }
 }
