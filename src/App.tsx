@@ -1,24 +1,26 @@
+import * as React from "react";
 import { useMemo, useState } from "react";
 import "./App.css";
-import * as React from "react";
 import {
-  type Oklch,
   buildForCSS,
-  getSpace,
-  Space,
-  toRgb,
-  toHsl,
-  formatRgb,
+  formatHex,
   formatHsl,
   formatOklch,
-  toOklch,
+  formatRgb,
+  getSpace,
   nearestNamedColor,
+  type Oklch,
   randomOklch,
+  Space,
+  toHsl,
+  toOklch,
+  toRgb,
 } from "./colour.tsx";
 import { p3_support } from "./p3_support.tsx";
-import { PanelRightOpen } from "lucide-react";
+import { Copy, PanelRightOpen } from "lucide-react";
 import {
   COLOUR_PROPERTY_MAP,
+  ColourFormats,
   PALETTE_CHROMA,
   PALETTE_LIGHTNESS,
 } from "./constants.tsx";
@@ -28,8 +30,12 @@ import type {
   CSSVariableProperties,
 } from "./types.tsx";
 import { capitalize, getContrastColour } from "./utils.tsx";
+import { useColorScheme } from "./hooks/useColorScheme.tsx";
+import { ColorPaletteStrip } from "./components/ColorPaletteStrip.tsx";
 
 function App() {
+  const { effectiveScheme } = useColorScheme();
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -42,6 +48,10 @@ function App() {
 
   const [currentColour, setCurrentColour] = useState<Oklch>(randomOklch());
 
+  const [activeFormat, setActiveFormat] = useState<
+    "hex" | "rgb" | "hsl" | "oklch"
+  >("hex");
+
   function updateColour(colour: Partial<Oklch>) {
     setCurrentColour((prevState) => {
       return { ...prevState, ...colour };
@@ -50,9 +60,12 @@ function App() {
 
   const colorPalette = useMemo(() => {
     const generatePaletteColour = (lightness: number, chroma: number) => {
+      const adjustedLightness =
+        effectiveScheme === "light" ? 1 - lightness : lightness;
+
       return buildForCSS({
         ...currentColour,
-        l: lightness,
+        l: adjustedLightness,
         c: chroma,
       });
     };
@@ -70,7 +83,7 @@ function App() {
 
     const currentColorRGB = toRgb(currentColour);
     const currentColorHSL = toHsl(currentColour);
-    const currentColorOKLCH = toOklch(currentColour);
+    const currentColorOklch = toOklch(currentColour);
 
     return {
       currentColor: currentColour,
@@ -79,9 +92,10 @@ function App() {
       colorSpace: getSpace(currentColour),
       css: {
         currentColor: buildForCSS(currentColour),
+        currentColorHEX: formatHex(currentColour),
         currentColorRGB: formatRgb(currentColorRGB),
         currentColorHSL: formatHsl(currentColorHSL),
-        currentColorOkLCH: formatOklch(currentColorOKLCH),
+        currentColorOklch: formatOklch(currentColorOklch),
 
         ...palette,
 
@@ -91,7 +105,26 @@ function App() {
         hue0: buildForCSS({ ...currentColour, h: 0 }),
       },
     };
-  }, [currentColour]);
+  }, [currentColour, effectiveScheme]);
+
+  const currentColorString = useMemo(() => {
+    switch (activeFormat) {
+      case "hex":
+        return colorPalette.css.currentColorHEX;
+      case "rgb":
+        return colorPalette.css.currentColorRGB;
+      case "hsl":
+        return colorPalette.css.currentColorHSL;
+      case "oklch":
+        return colorPalette.css.currentColorOklch;
+    }
+  }, [activeFormat, colorPalette]);
+
+  function copyToClipboard() {
+    navigator.clipboard
+      .writeText(currentColorString)
+      .then((r) => console.log(r)); // add toast notification on success
+  }
 
   return (
     <div
@@ -100,7 +133,7 @@ function App() {
     >
       <div className="z-10 flex h-full w-full flex-col items-center">
         <div
-          className="relative flex h-16 w-full flex-row items-center justify-center shadow-xl/50 shadow-black"
+          className="relative flex h-16 min-h-16 w-full flex-row items-center justify-center shadow-xl/50 shadow-black"
           style={{
             color: colorPalette.css.base300,
             backgroundColor: colorPalette.css.base950,
@@ -111,13 +144,13 @@ function App() {
               colourpicker
             </span>
           </div>
-          <div className="flex items-center justify-center">
+          <div className="absolute top-0 z-20 m-6 flex items-center justify-center">
             <div
-              className="rounded-xl px-6 py-3"
+              className="rounded-xl px-6 py-4"
               style={{ backgroundColor: colorPalette.css.currentColor }}
             >
               <span
-                className="font-semibold"
+                className="text-xl font-semibold"
                 style={{
                   color: getContrastColour(colorPalette.currentColor),
                 }}
@@ -131,7 +164,7 @@ function App() {
           </div>
         </div>
         <div
-          className="main-container z-10 flex w-3/5 flex-grow flex-row p-8 shadow-xl/50 shadow-black"
+          className="main-container z-10 flex w-3/5 flex-grow flex-col items-center justify-center p-8 py-14 shadow-xl/50 shadow-black"
           style={
             {
               "--current-color": colorPalette.css.currentColor,
@@ -144,94 +177,136 @@ function App() {
             } as CSSVariableProperties
           }
         >
-          <div className="flex w-full flex-col">
-            <div className="flex w-1/2 max-w-1/2 min-w-1/2 flex-row">
-              <div
-                className="h-16 w-24 rounded-2xl"
-                style={{ backgroundColor: colorPalette.css.currentColor }}
-              />
-              <div
-                className="h-16 w-24 rounded-2xl"
-                style={{ backgroundColor: colorPalette.css.currentColorRGB }}
-              />
-            </div>
-            {
-              {
-                [Space.Out]: <span className="color-white">Invalid color</span>,
-                [Space.P3]: (
-                  <>
-                    {p3_support ? (
-                      ""
-                    ) : (
-                      <span className="color-black">
-                        Colour only available on P3 displays
-                      </span>
-                    )}
-                  </>
-                ),
-              }[colorPalette.colorSpace]
-            }
-            <input
-              type="text"
-              name="hexInput"
-              value={colorPalette.css.currentColorOkLCH}
-              readOnly={true}
-            />
-            <input
-              type="text"
-              name="hexInput"
-              value={colorPalette.css.currentColorHSL}
-              readOnly={true}
-            />
-            <input
-              type="text"
-              name="hexInput"
-              value={colorPalette.css.currentColorRGB}
-              readOnly={true}
-            />
-            <div className="flex w-fit flex-row border-2 border-blue-500">
-              {Object.keys(PALETTE_LIGHTNESS).map((step) => (
+          <div className="flex w-[26rem] flex-col items-center">
+            <div className="flex w-full flex-row gap-8 py-2">
+              {colorPalette.colorSpace === Space.sRGB ? (
                 <div
-                  key={JSON.stringify({ ...currentColour, l: step })}
-                  className="h-8 w-8"
-                  style={{
-                    backgroundColor:
-                      colorPalette.css[`base${step}` as BaseColourKeys],
-                  }}
+                  className="h-32 w-full rounded-2xl"
+                  style={{ backgroundColor: colorPalette.css.currentColorRGB }}
                 />
-              ))}
+              ) : (
+                <div
+                  className="h-32 w-48 rounded-2xl"
+                  style={{ backgroundColor: colorPalette.css.currentColorRGB }}
+                />
+              )}
+              {
+                {
+                  [Space.Out]: (
+                    <div className="border-contrast-grey flex h-32 w-48 items-center justify-center rounded-2xl border-6 border-dashed p-4 text-center">
+                      <span className="color-white text-sm">
+                        Invalid colour
+                      </span>
+                    </div>
+                  ),
+                  [Space.P3]: (
+                    <>
+                      {p3_support ? (
+                        <div
+                          className="flex h-32 w-48 items-center justify-center rounded-2xl"
+                          style={{
+                            backgroundColor: colorPalette.css.currentColor,
+                          }}
+                        >
+                          <span className="text-contrast-grey/10 text-6xl font-black">
+                            P3
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="border-contrast-grey flex h-32 w-48 items-center justify-center rounded-2xl border-6 border-dashed p-4 text-center">
+                          <span className="color-white text-sm">
+                            Colour only available on P3 displays
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ),
+                }[colorPalette.colorSpace]
+              }
             </div>
-          </div>
-          <div className="flex w-full flex-col">
-            <input
-              type="range"
-              name="hueInput"
-              min="0"
-              max="360"
-              value={colorPalette.currentColor.h}
-              step="1.8"
-              className="input-range-colour bg-linear-to-r/longer from-(--hue-0) to-(--hue-0)"
-              onChange={handleInputChange}
+            <div className="m-4 flex w-full flex-col gap-2 p-2">
+              <div className="flex flex-row gap-3">
+                <div
+                  className="w-fit rounded-md p-2"
+                  style={{ backgroundColor: colorPalette.css.base700 }}
+                >
+                  <span className="w-fit font-mono text-lg">
+                    {currentColorString}
+                  </span>
+                </div>
+                <button
+                  className="hover:bg-contrast-grey cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out"
+                  onClick={copyToClipboard}
+                >
+                  <Copy className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="flex flex-row gap-1">
+                {ColourFormats.map((format) => (
+                  <div
+                    key={format}
+                    className="cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white" // transition-colors duration-200 ease-in-out"
+                    style={{
+                      backgroundColor:
+                        activeFormat === format
+                          ? colorPalette.css.base500
+                          : colorPalette.css.base700,
+                    }}
+                    onClick={() => {
+                      setActiveFormat(format);
+                    }}
+                  >
+                    {format.toUpperCase()}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex w-full flex-col gap-4 p-1">
+              <div className="w-full px-2">
+                <input
+                  type="range"
+                  name="lightnessInput"
+                  min="0"
+                  max="1"
+                  value={colorPalette.currentColor.l}
+                  step="0.005"
+                  className="input-range-colour bg-linear-to-r from-black via-(--lightness-05) to-white"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="w-full px-2">
+                <input
+                  type="range"
+                  name="chromaInput"
+                  min="0"
+                  max="0.4"
+                  value={colorPalette.currentColor.c}
+                  step="0.002"
+                  className="input-range-colour bg-linear-to-r from-(--chroma-0) to-(--chroma-027)"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="w-full px-2">
+                <input
+                  type="range"
+                  name="hueInput"
+                  min="0"
+                  max="360"
+                  value={colorPalette.currentColor.h}
+                  step="1.8"
+                  className="input-range-colour bg-linear-to-r/longer from-(--hue-0) to-(--hue-0)"
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <ColorPaletteStrip
+              baseColor={currentColour}
+              type={"monochromatic"}
             />
-            <input
-              type="range"
-              name="lightnessInput"
-              min="0"
-              max="1"
-              value={colorPalette.currentColor.l}
-              step="0.005"
-              className="input-range-colour m-2 h-5 w-128 rounded-full bg-linear-to-r from-black via-(--lightness-05) to-white"
-              onChange={handleInputChange}
-            />
-            <input
-              type="range"
-              name="chromaInput"
-              min="0"
-              max="0.4"
-              value={colorPalette.currentColor.c}
-              step="0.002"
-              className="input-range-colour m-2 h-5 w-128 rounded-full bg-linear-to-r from-(--chroma-0) to-(--chroma-027)"
-              onChange={handleInputChange}
+            <ColorPaletteStrip baseColor={currentColour} type={"triadic"} />
+            <ColorPaletteStrip
+              baseColor={currentColour}
+              type={"complementary"}
             />
           </div>
         </div>

@@ -1,5 +1,5 @@
 import type { Oklch } from "./colour.tsx";
-import type { ColourInputName } from "./types.tsx";
+import type { ColourFormat, ColourInputName } from "./types.tsx";
 
 export const PALETTE_LIGHTNESS = {
   50: 0.95,
@@ -37,3 +37,5 @@ export const COLOUR_PROPERTY_MAP: Record<
   chromaInput: "c",
   hueInput: "h",
 } as const;
+
+export const ColourFormats: ColourFormat[] = ["hex", "rgb", "hsl", "oklch"];

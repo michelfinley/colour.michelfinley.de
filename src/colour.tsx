@@ -3,6 +3,7 @@
 import {
   type Color,
   colorsNamed,
+  formatHex,
   type Hsl,
   inGamut,
   modeHsl,
@@ -61,10 +62,12 @@ export const toP3 = toGamut("p3", COLOR_FN);
 
 export const toOklch = toGamut("oklch", COLOR_FN);
 
+export { formatHex };
+
 export function formatRgb(color: Rgb): string {
-  const r = Math.round(25500 * color.r) / 100;
-  const g = Math.round(25500 * color.g) / 100;
-  const b = Math.round(25500 * color.b) / 100;
+  const r = Math.round(255 * color.r);
+  const g = Math.round(255 * color.g);
+  const b = Math.round(255 * color.b);
   if (typeof color.alpha !== "undefined" && color.alpha < 1) {
     return `rgba(${r}, ${g}, ${b}, ${color.alpha})`;
   } else {
@@ -78,7 +81,7 @@ export function formatHsl(color: Hsl): string {
   if (typeof alpha !== "undefined" && alpha < 1) {
     postfix = ` / ${clean(100 * alpha)}%`;
   }
-  return `hsl(${clean(h ? h : 0, 4)} ${clean(s ? s * 100 : 100, 4)} ${clean(l ? l * 100 : 100, 4)}${postfix})`;
+  return `hsl(${clean(h ? h : 0, 2)} ${clean(s ? s * 100 : 100, 0)}% ${clean(l ? l * 100 : 100, 0)}%${postfix})`;
 }
 
 export function formatOklch(color: Oklch): string {
@@ -87,7 +90,7 @@ export function formatOklch(color: Oklch): string {
   if (typeof alpha !== "undefined" && alpha < 1) {
     postfix = ` / ${clean(100 * alpha)}%`;
   }
-  return `${COLOR_FN}(${clean(l / L_MAX, 4)} ${c} ${h}${postfix})`;
+  return `${COLOR_FN}(${clean(l / L_MAX, 4)} ${clean(c, 4)} ${clean(h ? h : 0, 2)}${postfix})`;
 }
 
 // Hack to avoid .999999 because of float bug implementation
@@ -124,6 +127,7 @@ const namedColors = Object.keys(colorsNamed);
 export const nearestNamedColor = (color: Color) =>
   nearest(namedColors)(color)[0];
 
+// TODO: further limit the range of lightness and chroma
 export function randomOklch(): Oklch {
   return toOklch(toP3(random("oklch", { l: [0.2, 0.8], c: [0.02, 0.4] })));
 }

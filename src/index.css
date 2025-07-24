@@ -24,13 +24,15 @@ body {
 
   --color-blue-500: oklch(0.5 0.17 256);
 
+  --color-contrast-grey: oklch(0.25 0 0);
+
   --color-white: oklch(0.95 0 0);
   --color-black: oklch(0.06 0 0);
 }
 
 @layer base {
   :root {
-    @apply bg-white text-black dark:bg-black dark:text-white font-[Noto_Sans];
+    @apply bg-white font-[Noto_Sans] text-black dark:bg-black dark:text-white;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
