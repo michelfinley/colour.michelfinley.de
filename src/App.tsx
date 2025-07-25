@@ -132,10 +132,10 @@ function App() {
 
   return (
     <div
-      className="m-0 flex h-full w-full flex-col items-center"
+      className="m-0 flex min-h-full w-full flex-col items-center"
       style={{ backgroundColor: colorPalette.css.currentColor }}
     >
-      <div className="z-10 flex h-full w-full flex-col items-center">
+      <div className="z-10 flex w-full flex-grow flex-col items-center">
         <div
           className="relative flex h-16 min-h-16 w-full flex-row items-center justify-center shadow-xl/50 shadow-black"
           style={{
@@ -168,7 +168,7 @@ function App() {
           </div>
         </div>
         <div
-          className="main-container z-10 flex w-2/3 flex-grow flex-col items-center p-8 py-16 shadow-xl/50 shadow-black"
+          className="main-container z-10 flex w-2/3 flex-grow flex-col items-center p-8 py-16 shadow-xl shadow-black"
           style={
             {
               "--current-color": colorPalette.css.currentColor,
@@ -181,7 +181,7 @@ function App() {
             } as CSSVariableProperties
           }
         >
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-grow flex-col items-center">
             <div className="mb-8 flex flex-row gap-8 p-2">
               {colorPalette.colorSpace === Space.sRGB ? (
                 <div
@@ -232,17 +232,14 @@ function App() {
               <div className="w-fit">
                 <div className="flex w-fit flex-col gap-2 p-2">
                   <div className="flex flex-row gap-3">
-                    <div
-                      className="flex flex-row rounded-md"
-                      style={{ backgroundColor: colorPalette.css.base700 }}
-                    >
+                    <div className="flex flex-row rounded-md bg-white/10">
                       <div className="w-[246px] p-2 pr-0">
                         <span className="font-mono text-lg">
                           {currentColorString}
                         </span>
                       </div>
                       <button
-                        className="ml-2 cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out hover:bg-black/30"
+                        className="ml-2 cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out hover:bg-white/15"
                         onClick={copyToClipboard}
                       >
                         <Copy className="h-5 w-5" />
@@ -253,18 +250,12 @@ function App() {
                     {ColourFormats.map((format) => (
                       <div
                         key={format}
-                        className="cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white" // transition-colors duration-200 ease-in-out"
-                        style={{
-                          backgroundColor:
-                            activeFormat === format
-                              ? colorPalette.css.base500
-                              : colorPalette.css.base700,
-                        }}
+                        className={`cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white transition-colors duration-200 ease-in-out ${activeFormat === format ? "bg-white/30" : "bg-white/10"} `}
                         onClick={() => {
                           setActiveFormat(format);
                         }}
                       >
-                        {format.toUpperCase()}
+                        {format}
                       </div>
                     ))}
                   </div>
