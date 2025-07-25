@@ -31,7 +31,7 @@ import type {
 } from "./types.tsx";
 import { capitalize, getContrastColour } from "./utils.tsx";
 import { useColorScheme } from "./hooks/useColorScheme.tsx";
-import { ColorPaletteStrip } from "./components/ColorPaletteStrip.tsx";
+import { ColourPaletteTabs } from "./components/ColourPaletteTabs.tsx";
 
 function App() {
   const { effectiveScheme } = useColorScheme();
@@ -302,21 +302,8 @@ function App() {
                 </div>
               </div>
             </div>
-
-            <div className="flex w-full flex-row">
-              <div className="flex flex-col">
-                <ColorPaletteStrip
-                  baseColor={currentColour}
-                  type={"monochromatic"}
-                />
-                <ColorPaletteStrip
-                  baseColor={currentColour}
-                  type={"complementary"}
-                />
-              </div>
-              <ColorPaletteStrip baseColor={currentColour} type={"triadic"} />
-              <ColorPaletteStrip baseColor={currentColour} type={"analogous"} />
-            </div>
+            <div className="flex flex-grow" />
+            <ColourPaletteTabs currentColour={currentColour} />
           </div>
         </div>
       </div>

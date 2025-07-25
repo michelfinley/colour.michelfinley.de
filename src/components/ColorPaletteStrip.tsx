@@ -59,7 +59,6 @@ export const ColorPaletteStrip: React.FC<ColorPaletteStripProps> = ({
 
   return (
     <div className="flex flex-col gap-2 rounded-lg p-2">
-      <span className="text-sm text-white capitalize">{type}</span>
       {colorPaletteEntries.map((palette, index) => (
         <div
           key={index}

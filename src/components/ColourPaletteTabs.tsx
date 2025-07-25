@@ -1,0 +1,47 @@
+import * as React from "react";
+import { TabButton } from "./TabButton.tsx";
+import type { Oklch } from "../colour.tsx";
+import { useState } from "react";
+import { ColourHarmonyPanel } from "./ColourHarmonyPanel.tsx";
+import { ColourShadesPanel } from "./ColourShadesPanel.tsx";
+import { RecentColoursPanel } from "./RecentColoursPanel.tsx";
+
+interface ColourPaletteTabsProps {
+  currentColour: Oklch;
+}
+
+type TabType = "harmonies" | "shades" | "recents";
+
+const TabTypes: TabType[] = ["harmonies", "shades", "recents"];
+
+export const ColourPaletteTabs: React.FC<ColourPaletteTabsProps> = ({
+  currentColour,
+}) => {
+  const [expandedTab, setExpandedTab] = useState<TabType | null>(null);
+
+  const TabContent = {
+    harmonies: <ColourHarmonyPanel currentColour={currentColour} />,
+    shades: <ColourShadesPanel currentColour={currentColour} />,
+    recents: <RecentColoursPanel currentColour={currentColour} />,
+  };
+
+  const handleTabToggle = (tabType: TabType) => {
+    setExpandedTab((currentTab) => (currentTab === tabType ? null : tabType));
+  };
+
+  return (
+    <div className="flex h-[236px] w-full flex-col gap-4">
+      <div className="flex flex-row gap-2">
+        {TabTypes.map((tabType) => (
+          <TabButton
+            key={tabType}
+            isExpanded={tabType === expandedTab}
+            onToggle={() => handleTabToggle(tabType)}
+            title={tabType}
+          />
+        ))}
+      </div>
+      {expandedTab && TabContent[expandedTab]}
+    </div>
+  );
+};
