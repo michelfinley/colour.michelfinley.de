@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import {
   buildForCSS,
@@ -50,13 +50,17 @@ function App() {
 
   const [activeFormat, setActiveFormat] = useState<
     "hex" | "rgb" | "hsl" | "oklch"
-  >("hex");
+  >("oklch");
 
   function updateColour(colour: Partial<Oklch>) {
     setCurrentColour((prevState) => {
       return { ...prevState, ...colour };
     });
   }
+
+  useEffect(() => {
+    document.title = `${capitalize(nearestNamedColor(currentColour))}`;
+  }, [currentColour]);
 
   const colorPalette = useMemo(() => {
     const generatePaletteColour = (lightness: number, chroma: number) => {
@@ -164,7 +168,7 @@ function App() {
           </div>
         </div>
         <div
-          className="main-container z-10 flex w-3/5 flex-grow flex-col items-center justify-center p-8 py-14 shadow-xl/50 shadow-black"
+          className="main-container z-10 flex w-2/3 flex-grow flex-col items-center p-8 py-16 shadow-xl/50 shadow-black"
           style={
             {
               "--current-color": colorPalette.css.currentColor,
@@ -177,11 +181,11 @@ function App() {
             } as CSSVariableProperties
           }
         >
-          <div className="flex w-[26rem] flex-col items-center">
-            <div className="flex w-full flex-row gap-8 py-2">
+          <div className="flex w-full flex-col items-center">
+            <div className="mb-8 flex flex-row gap-8 p-2">
               {colorPalette.colorSpace === Space.sRGB ? (
                 <div
-                  className="h-32 w-full rounded-2xl"
+                  className="h-32 w-[26rem] rounded-2xl"
                   style={{ backgroundColor: colorPalette.css.currentColorRGB }}
                 />
               ) : (
@@ -224,90 +228,104 @@ function App() {
                 }[colorPalette.colorSpace]
               }
             </div>
-            <div className="m-4 flex w-full flex-col gap-2 p-2">
-              <div className="flex flex-row gap-3">
-                <div
-                  className="w-fit rounded-md p-2"
-                  style={{ backgroundColor: colorPalette.css.base700 }}
-                >
-                  <span className="w-fit font-mono text-lg">
-                    {currentColorString}
-                  </span>
-                </div>
-                <button
-                  className="hover:bg-contrast-grey cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out"
-                  onClick={copyToClipboard}
-                >
-                  <Copy className="h-5 w-5" />
-                </button>
-              </div>
-              <div className="flex flex-row gap-1">
-                {ColourFormats.map((format) => (
-                  <div
-                    key={format}
-                    className="cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white" // transition-colors duration-200 ease-in-out"
-                    style={{
-                      backgroundColor:
-                        activeFormat === format
-                          ? colorPalette.css.base500
-                          : colorPalette.css.base700,
-                    }}
-                    onClick={() => {
-                      setActiveFormat(format);
-                    }}
-                  >
-                    {format.toUpperCase()}
+            <div className="mb-8 flex w-2/3 flex-row">
+              <div className="w-fit">
+                <div className="flex w-fit flex-col gap-2 p-2">
+                  <div className="flex flex-row gap-3">
+                    <div
+                      className="flex flex-row rounded-md"
+                      style={{ backgroundColor: colorPalette.css.base700 }}
+                    >
+                      <div className="w-[246px] p-2 pr-0">
+                        <span className="font-mono text-lg">
+                          {currentColorString}
+                        </span>
+                      </div>
+                      <button
+                        className="ml-2 cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out hover:bg-black/30"
+                        onClick={copyToClipboard}
+                      >
+                        <Copy className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                ))}
+                  <div className="flex flex-row gap-1">
+                    {ColourFormats.map((format) => (
+                      <div
+                        key={format}
+                        className="cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white" // transition-colors duration-200 ease-in-out"
+                        style={{
+                          backgroundColor:
+                            activeFormat === format
+                              ? colorPalette.css.base500
+                              : colorPalette.css.base700,
+                        }}
+                        onClick={() => {
+                          setActiveFormat(format);
+                        }}
+                      >
+                        {format.toUpperCase()}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="w-full">
+                <div className="mx-2 flex flex-col gap-2 p-2">
+                  <div className="m-0.5 h-5 max-h-5 min-h-5 w-full">
+                    <input
+                      type="range"
+                      name="lightnessInput"
+                      min="0"
+                      max="1"
+                      value={colorPalette.currentColor.l}
+                      step="0.005"
+                      className="input-range-colour bg-linear-to-r from-black via-(--lightness-05) to-white"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="m-0.5 h-5 max-h-5 min-h-5 w-full">
+                    <input
+                      type="range"
+                      name="chromaInput"
+                      min="0"
+                      max="0.4"
+                      value={colorPalette.currentColor.c}
+                      step="0.002"
+                      className="input-range-colour bg-linear-to-r from-(--chroma-0) to-(--chroma-027)"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="m-0.5 h-5 max-h-5 min-h-5 w-full">
+                    <input
+                      type="range"
+                      name="hueInput"
+                      min="0"
+                      max="360"
+                      value={colorPalette.currentColor.h}
+                      step="1.8"
+                      className="input-range-colour bg-linear-to-r/longer from-(--hue-0) to-(--hue-0)"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex w-full flex-col gap-4 p-1">
-              <div className="w-full px-2">
-                <input
-                  type="range"
-                  name="lightnessInput"
-                  min="0"
-                  max="1"
-                  value={colorPalette.currentColor.l}
-                  step="0.005"
-                  className="input-range-colour bg-linear-to-r from-black via-(--lightness-05) to-white"
-                  onChange={handleInputChange}
+
+            <div className="flex w-full flex-row">
+              <div className="flex flex-col">
+                <ColorPaletteStrip
+                  baseColor={currentColour}
+                  type={"monochromatic"}
+                />
+                <ColorPaletteStrip
+                  baseColor={currentColour}
+                  type={"complementary"}
                 />
               </div>
-              <div className="w-full px-2">
-                <input
-                  type="range"
-                  name="chromaInput"
-                  min="0"
-                  max="0.4"
-                  value={colorPalette.currentColor.c}
-                  step="0.002"
-                  className="input-range-colour bg-linear-to-r from-(--chroma-0) to-(--chroma-027)"
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="w-full px-2">
-                <input
-                  type="range"
-                  name="hueInput"
-                  min="0"
-                  max="360"
-                  value={colorPalette.currentColor.h}
-                  step="1.8"
-                  className="input-range-colour bg-linear-to-r/longer from-(--hue-0) to-(--hue-0)"
-                  onChange={handleInputChange}
-                />
-              </div>
+              <ColorPaletteStrip baseColor={currentColour} type={"triadic"} />
+              <ColorPaletteStrip baseColor={currentColour} type={"analogous"} />
             </div>
-            <ColorPaletteStrip
-              baseColor={currentColour}
-              type={"monochromatic"}
-            />
-            <ColorPaletteStrip baseColor={currentColour} type={"triadic"} />
-            <ColorPaletteStrip
-              baseColor={currentColour}
-              type={"complementary"}
-            />
           </div>
         </div>
       </div>

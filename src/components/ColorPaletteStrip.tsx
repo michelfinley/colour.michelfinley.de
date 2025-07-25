@@ -5,7 +5,7 @@ import { buildForCSS, type Oklch } from "../colour.tsx";
 
 type ColorPaletteStripProps = {
   baseColor: Oklch;
-  type: "monochromatic" | "triadic" | "complementary";
+  type: "monochromatic" | "triadic" | "complementary" | "analogous";
 };
 
 export const ColorPaletteStrip: React.FC<ColorPaletteStripProps> = ({
@@ -30,6 +30,13 @@ export const ColorPaletteStrip: React.FC<ColorPaletteStripProps> = ({
         }
         case "complementary": {
           return [baseColor, { ...baseColor, h: (baseColor.h + 180) % 360 }];
+        }
+        case "analogous": {
+          return [
+            { ...baseColor, h: (baseColor.h - 30 + 360) % 360 },
+            baseColor,
+            { ...baseColor, h: (baseColor.h + 30) % 360 },
+          ];
         }
       }
     };

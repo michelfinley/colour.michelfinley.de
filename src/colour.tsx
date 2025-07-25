@@ -90,7 +90,7 @@ export function formatOklch(color: Oklch): string {
   if (typeof alpha !== "undefined" && alpha < 1) {
     postfix = ` / ${clean(100 * alpha)}%`;
   }
-  return `${COLOR_FN}(${clean(l / L_MAX, 4)} ${clean(c, 4)} ${clean(h ? h : 0, 2)}${postfix})`;
+  return `${COLOR_FN}(${clean(l / L_MAX, 3)} ${clean(c, 3)} ${clean(h ? h : 0, 1)}${postfix})`;
 }
 
 // Hack to avoid .999999 because of float bug implementation
@@ -127,7 +127,11 @@ const namedColors = Object.keys(colorsNamed);
 export const nearestNamedColor = (color: Color) =>
   nearest(namedColors)(color)[0];
 
-// TODO: further limit the range of lightness and chroma
 export function randomOklch(): Oklch {
-  return toOklch(toP3(random("oklch", { l: [0.2, 0.8], c: [0.02, 0.4] })));
+  const random_color = toOklch(
+    toP3(random("oklch", { l: [0.51, 0.8], c: [0.11, 0.35] })),
+  );
+  random_color.l -= 0.01;
+  random_color.c -= 0.01;
+  return random_color;
 }
