@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-export type ColorScheme = "light" | "dark" | "system";
+export type ColourScheme = "light" | "dark" | "system";
 
-export function useColorScheme() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("system");
+export function useColourScheme() {
+  const [colourScheme, setColourScheme] = useState<ColourScheme>("system");
   const [systemScheme, setSystemScheme] = useState<"light" | "dark">(
     window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -21,11 +21,12 @@ export function useColorScheme() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const effectiveScheme = colorScheme === "system" ? systemScheme : colorScheme;
+  const effectiveScheme =
+    colourScheme === "system" ? systemScheme : colourScheme;
 
   return {
-    colorScheme,
-    setColorScheme,
+    colorScheme: colourScheme,
+    setColourScheme: setColourScheme,
     effectiveScheme,
   };
 }

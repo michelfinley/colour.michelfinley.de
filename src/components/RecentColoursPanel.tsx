@@ -1,12 +1,12 @@
 import { buildForCSS, type Oklch } from "../colour.tsx";
-import * as React from "react";
+import type { FC } from "react";
 
 interface RecentColoursPanelProps {
   recentColours: Oklch[];
   onColourSelect: (colour: Oklch) => void;
 }
 
-export const RecentColoursPanel: React.FC<RecentColoursPanelProps> = ({
+export const RecentColoursPanel: FC<RecentColoursPanelProps> = ({
   recentColours,
   onColourSelect,
 }) => {

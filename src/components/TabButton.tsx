@@ -1,5 +1,5 @@
-import * as React from "react";
 import { ChevronDown } from "lucide-react";
+import type { FC } from "react";
 
 interface TabButtonProps {
   title: string;
@@ -7,7 +7,7 @@ interface TabButtonProps {
   onToggle: () => void;
 }
 
-export const TabButton: React.FC<TabButtonProps> = ({
+export const TabButton: FC<TabButtonProps> = ({
   title,
   isExpanded,
   onToggle,

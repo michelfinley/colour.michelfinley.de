@@ -1,8 +1,7 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import "./App.css";
 import {
-  nearestNamedColor,
+  nearestNamedColour,
   type Oklch,
   randomOklch,
   Space,
@@ -17,7 +16,7 @@ import type {
 } from "./types.tsx";
 import { capitalize, getContrastColour } from "./utils.tsx";
 import { ColourPaletteTabs } from "./components/ColourPaletteTabs.tsx";
-import { useRecentColors } from "./hooks/useRecentColours.tsx";
+import { useRecentColours } from "./hooks/useRecentColours.tsx";
 import { useColourPalette } from "./hooks/useColourPalette.tsx";
 
 function App() {
@@ -29,7 +28,7 @@ function App() {
     activeFormat,
   );
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     if (name in COLOUR_PROPERTY_MAP) {
@@ -39,7 +38,7 @@ function App() {
     }
   };
 
-  const { recentColours, addRecentColour } = useRecentColors();
+  const { recentColours, addRecentColour } = useRecentColours();
 
   function updateColour(colour: Partial<Oklch>) {
     setCurrentColour((prevState) => {
@@ -48,7 +47,7 @@ function App() {
   }
 
   useEffect(() => {
-    document.title = `${capitalize(nearestNamedColor(currentColour))}`;
+    document.title = `${capitalize(nearestNamedColour(currentColour))}`;
   }, [currentColour]);
 
   function copyToClipboard() {
@@ -87,7 +86,7 @@ function App() {
                   color: getContrastColour(colourPalette.currentColour),
                 }}
               >
-                {capitalize(nearestNamedColor(currentColour))}
+                {capitalize(nearestNamedColour(currentColour))}
               </span>
             </div>
           </div>
@@ -99,7 +98,6 @@ function App() {
           className="main-container z-10 flex w-2/3 flex-grow flex-col items-center p-8 py-16 shadow-xl shadow-black"
           style={
             {
-              "--current-color": colourPalette.css.currentColour,
               "--lightness-05": colourPalette.css.lightness05,
               "--chroma-0": colourPalette.css.chroma0,
               "--chroma-027": colourPalette.css.chroma027,

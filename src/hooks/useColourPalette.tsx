@@ -11,7 +11,7 @@ import {
   toRgb,
 } from "../colour.tsx";
 import { useMemo } from "react";
-import { useColorScheme } from "./useColorScheme.tsx";
+import { useColourScheme } from "./useColourScheme.tsx";
 import { PALETTE_CHROMA, PALETTE_LIGHTNESS } from "../constants.tsx";
 import type { BaseColourKeys, ColourFormat } from "../types.tsx";
 
@@ -19,7 +19,7 @@ export const useColourPalette = (
   currentColour: Oklch,
   activeFormat: ColourFormat,
 ) => {
-  const { effectiveScheme } = useColorScheme();
+  const { effectiveScheme } = useColourScheme();
 
   const colourPalette = useMemo(() => {
     const generatePaletteColour = (lightness: number, chroma: number) => {

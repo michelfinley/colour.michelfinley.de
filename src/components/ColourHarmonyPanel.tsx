@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { type FC, useState } from "react";
 import type { Oklch } from "../colour.tsx";
-import { ColorPaletteStrip } from "./ColorPaletteStrip.tsx";
-import * as React from "react";
+import { ColourPaletteStrip } from "./ColourPaletteStrip.tsx";
 
 interface ColourHarmonyPanelProps {
   currentColour: Oklch;
@@ -16,7 +15,7 @@ const HarmonyTypes: HarmonyType[] = [
   "analogous",
 ];
 
-export const ColourHarmonyPanel: React.FC<ColourHarmonyPanelProps> = ({
+export const ColourHarmonyPanel: FC<ColourHarmonyPanelProps> = ({
   currentColour,
 }) => {
   const [selectedHarmony, setSelectedHarmony] =
@@ -36,7 +35,7 @@ export const ColourHarmonyPanel: React.FC<ColourHarmonyPanelProps> = ({
           </button>
         ))}
       </div>
-      <ColorPaletteStrip baseColor={currentColour} type={selectedHarmony} />
+      <ColourPaletteStrip baseColour={currentColour} type={selectedHarmony} />
     </div>
   );
 };

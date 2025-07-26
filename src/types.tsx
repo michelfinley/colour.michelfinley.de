@@ -1,6 +1,6 @@
-import * as React from "react";
+import type { CSSProperties } from "react";
 
-export type CSSVariableProperties = React.CSSProperties & {
+export type CSSVariableProperties = CSSProperties & {
   [key: `--${string}`]: string;
 };
 

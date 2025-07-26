@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { Oklch } from "culori/fn";
+import type { Oklch } from "../colour.tsx";
 
-const STORAGE_KEY = "recentColors";
-const MAX_RECENT_COLORS = 10;
+const STORAGE_KEY = "recentColours";
+const MAX_RECENT_COLOURS = 10;
 
-export const useRecentColors = () => {
+export const useRecentColours = () => {
   const [recentColours, setRecentColours] = useState<Oklch[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -14,17 +14,17 @@ export const useRecentColors = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(recentColours));
   }, [recentColours]);
 
-  const addRecentColour = (color: Oklch) => {
+  const addRecentColour = (colour: Oklch) => {
     setRecentColours((prevColours) => {
-      const filteredColors = prevColours.filter(
+      const filteredColours = prevColours.filter(
         (recentColours) =>
           !(
-            recentColours.l === color.l &&
-            recentColours.c === color.c &&
-            recentColours.h === color.h
+            recentColours.l === colour.l &&
+            recentColours.c === colour.c &&
+            recentColours.h === colour.h
           ),
       );
-      return [color, ...filteredColors].slice(0, MAX_RECENT_COLORS);
+      return [colour, ...filteredColours].slice(0, MAX_RECENT_COLOURS);
     });
   };
   return { recentColours, addRecentColour };

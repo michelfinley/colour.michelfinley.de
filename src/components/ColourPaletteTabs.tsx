@@ -1,7 +1,6 @@
-import * as React from "react";
 import { TabButton } from "./TabButton.tsx";
 import type { Oklch } from "../colour.tsx";
-import { useState } from "react";
+import { type FC, useState } from "react";
 import { ColourHarmonyPanel } from "./ColourHarmonyPanel.tsx";
 import { ColourShadesPanel } from "./ColourShadesPanel.tsx";
 import { RecentColoursPanel } from "./RecentColoursPanel.tsx";
@@ -16,7 +15,7 @@ type TabType = "harmonies" | "shades" | "recents";
 
 const TabTypes: TabType[] = ["harmonies", "shades", "recents"];
 
-export const ColourPaletteTabs: React.FC<ColourPaletteTabsProps> = ({
+export const ColourPaletteTabs: FC<ColourPaletteTabsProps> = ({
   currentColour,
   recentColours,
   onColourSelect,
