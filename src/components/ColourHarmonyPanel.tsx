@@ -11,8 +11,8 @@ type HarmonyType = "monochromatic" | "triadic" | "complementary" | "analogous";
 
 const HarmonyTypes: HarmonyType[] = [
   "monochromatic",
-  "triadic",
   "complementary",
+  "triadic",
   "analogous",
 ];
 
@@ -25,7 +25,7 @@ export const ColourHarmonyPanel: React.FC<ColourHarmonyPanelProps> = ({
     <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-1">
         {HarmonyTypes.map((harmonyType) => (
-          <div
+          <button
             key={harmonyType}
             className={`cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white transition-colors duration-200 ease-in-out ${selectedHarmony === harmonyType ? "bg-white/30" : "bg-white/10"} `}
             onClick={() => {
@@ -33,7 +33,7 @@ export const ColourHarmonyPanel: React.FC<ColourHarmonyPanelProps> = ({
             }}
           >
             {harmonyType}
-          </div>
+          </button>
         ))}
       </div>
       <ColorPaletteStrip baseColor={currentColour} type={selectedHarmony} />

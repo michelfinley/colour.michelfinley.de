@@ -252,7 +252,7 @@ function App() {
                   </div>
                   <div className="flex flex-row gap-1">
                     {ColourFormats.map((format) => (
-                      <div
+                      <button
                         key={format}
                         className={`cursor-pointer rounded-lg p-1.5 px-2 font-mono text-xs text-white transition-colors duration-200 ease-in-out ${activeFormat === format ? "bg-white/30" : "bg-white/10"} `}
                         onClick={() => {
@@ -260,7 +260,7 @@ function App() {
                         }}
                       >
                         {format}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>

@@ -21,7 +21,7 @@ export const ColourPaletteTabs: React.FC<ColourPaletteTabsProps> = ({
   recentColours,
   onColourSelect,
 }) => {
-  const [expandedTab, setExpandedTab] = useState<TabType | null>(null);
+  const [expandedTab, setExpandedTab] = useState<TabType | null>("harmonies");
 
   const TabContent = {
     harmonies: <ColourHarmonyPanel currentColour={currentColour} />,
