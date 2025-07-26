@@ -4,16 +4,14 @@ import { type FC, useState } from "react";
 import { ColourHarmonyPanel } from "./ColourHarmonyPanel.tsx";
 import { ColourShadesPanel } from "./ColourShadesPanel.tsx";
 import { RecentColoursPanel } from "./RecentColoursPanel.tsx";
+import { TabTypes } from "../constants.tsx";
+import type { TabType } from "../types.tsx";
 
 interface ColourPaletteTabsProps {
   currentColour: Oklch;
   recentColours: Oklch[];
   onColourSelect: (colour: Oklch) => void;
 }
-
-type TabType = "harmonies" | "shades" | "recents";
-
-const TabTypes: TabType[] = ["harmonies", "shades", "recents"];
 
 export const ColourPaletteTabs: FC<ColourPaletteTabsProps> = ({
   currentColour,

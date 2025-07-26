@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-
-export type ColourScheme = "light" | "dark" | "system";
+import type { ColourScheme, SystemScheme } from "../types.tsx";
 
 export function useColourScheme() {
   const [colourScheme, setColourScheme] = useState<ColourScheme>("system");
-  const [systemScheme, setSystemScheme] = useState<"light" | "dark">(
+  const [systemScheme, setSystemScheme] = useState<SystemScheme>(
     window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light",

@@ -1,7 +1,12 @@
 import type { Oklch } from "./colour.tsx";
-import type { ColourFormat, ColourInputName } from "./types.tsx";
+import type {
+  ColourFormat,
+  ColourInputName,
+  HarmonyType,
+  TabType,
+} from "./types.tsx";
 
-export const PALETTE_LIGHTNESS = {
+export const SHADE_LIGHTNESS = {
   50: 0.95,
   100: 0.9,
   200: 0.8,
@@ -15,7 +20,7 @@ export const PALETTE_LIGHTNESS = {
   950: 0.06,
 };
 
-export const PALETTE_CHROMA = {
+export const SHADE_CHROMA = {
   50: 0.02,
   100: 0.05,
   200: 0.1,
@@ -36,6 +41,15 @@ export const COLOUR_PROPERTY_MAP: Record<
   lightnessInput: "l",
   chromaInput: "c",
   hueInput: "h",
-} as const;
+};
 
 export const ColourFormats: ColourFormat[] = ["hex", "rgb", "hsl", "oklch"];
+
+export const TabTypes: TabType[] = ["harmonies", "shades", "recents"];
+
+export const HarmonyTypes: HarmonyType[] = [
+  "monochromatic",
+  "complementary",
+  "triadic",
+  "analogous",
+];

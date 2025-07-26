@@ -1,11 +1,11 @@
 import { type FC, useMemo } from "react";
-import { PALETTE_CHROMA, PALETTE_LIGHTNESS } from "../constants.tsx";
+import { SHADE_CHROMA, SHADE_LIGHTNESS } from "../constants.tsx";
 import { buildForCSS, type Oklch } from "../colour.tsx";
 
-type ColourPaletteStripProps = {
+interface ColourPaletteStripProps {
   baseColour: Oklch;
   type: "monochromatic" | "triadic" | "complementary" | "analogous";
-};
+}
 
 export const ColourPaletteStrip: FC<ColourPaletteStripProps> = ({
   baseColour,
@@ -43,13 +43,13 @@ export const ColourPaletteStrip: FC<ColourPaletteStripProps> = ({
     const colourHarmonies = calculateColourHarmonies();
 
     return colourHarmonies.map((colour) =>
-      Object.entries(PALETTE_LIGHTNESS).map(([step, lightness]) => ({
+      Object.entries(SHADE_LIGHTNESS).map(([step, lightness]) => ({
         key: `${type}-${colour.h}-${step}`,
         colour: buildForCSS({
           ...colour,
           l: lightness,
           c:
-            PALETTE_CHROMA[step as unknown as keyof typeof PALETTE_CHROMA] *
+            SHADE_CHROMA[step as unknown as keyof typeof SHADE_CHROMA] *
             Math.min(colour.c / 0.22, 1),
         }),
       })),

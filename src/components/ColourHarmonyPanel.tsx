@@ -1,19 +1,12 @@
 import { type FC, useState } from "react";
 import type { Oklch } from "../colour.tsx";
 import { ColourPaletteStrip } from "./ColourPaletteStrip.tsx";
+import type { HarmonyType } from "../types.tsx";
+import { HarmonyTypes } from "../constants.tsx";
 
 interface ColourHarmonyPanelProps {
   currentColour: Oklch;
 }
-
-type HarmonyType = "monochromatic" | "triadic" | "complementary" | "analogous";
-
-const HarmonyTypes: HarmonyType[] = [
-  "monochromatic",
-  "complementary",
-  "triadic",
-  "analogous",
-];
 
 export const ColourHarmonyPanel: FC<ColourHarmonyPanelProps> = ({
   currentColour,

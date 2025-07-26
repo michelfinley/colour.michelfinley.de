@@ -12,7 +12,7 @@ import {
 } from "../colour.tsx";
 import { useMemo } from "react";
 import { useColourScheme } from "./useColourScheme.tsx";
-import { PALETTE_CHROMA, PALETTE_LIGHTNESS } from "../constants.tsx";
+import { SHADE_CHROMA, SHADE_LIGHTNESS } from "../constants.tsx";
 import type { BaseColourKeys, ColourFormat } from "../types.tsx";
 
 export const useColourPalette = (
@@ -33,11 +33,11 @@ export const useColourPalette = (
       });
     };
 
-    const palette = Object.entries(PALETTE_LIGHTNESS).reduce(
+    const palette = Object.entries(SHADE_LIGHTNESS).reduce(
       (acc, [key, lightness]) => {
         acc[`base${key}` as BaseColourKeys] = generatePaletteColour(
           lightness,
-          PALETTE_CHROMA[key as unknown as keyof typeof PALETTE_CHROMA],
+          SHADE_CHROMA[key as unknown as keyof typeof SHADE_CHROMA],
         );
         return acc;
       },
