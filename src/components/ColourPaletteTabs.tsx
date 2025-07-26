@@ -8,6 +8,8 @@ import { RecentColoursPanel } from "./RecentColoursPanel.tsx";
 
 interface ColourPaletteTabsProps {
   currentColour: Oklch;
+  recentColours: Oklch[];
+  onColourSelect: (colour: Oklch) => void;
 }
 
 type TabType = "harmonies" | "shades" | "recents";
@@ -16,13 +18,20 @@ const TabTypes: TabType[] = ["harmonies", "shades", "recents"];
 
 export const ColourPaletteTabs: React.FC<ColourPaletteTabsProps> = ({
   currentColour,
+  recentColours,
+  onColourSelect,
 }) => {
   const [expandedTab, setExpandedTab] = useState<TabType | null>(null);
 
   const TabContent = {
     harmonies: <ColourHarmonyPanel currentColour={currentColour} />,
     shades: <ColourShadesPanel currentColour={currentColour} />,
-    recents: <RecentColoursPanel currentColour={currentColour} />,
+    recents: (
+      <RecentColoursPanel
+        recentColours={recentColours}
+        onColourSelect={onColourSelect}
+      />
+    ),
   };
 
   const handleTabToggle = (tabType: TabType) => {

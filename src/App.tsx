@@ -32,6 +32,7 @@ import type {
 import { capitalize, getContrastColour } from "./utils.tsx";
 import { useColorScheme } from "./hooks/useColorScheme.tsx";
 import { ColourPaletteTabs } from "./components/ColourPaletteTabs.tsx";
+import { useRecentColors } from "./hooks/useRecentColours.tsx";
 
 function App() {
   const { effectiveScheme } = useColorScheme();
@@ -51,6 +52,8 @@ function App() {
   const [activeFormat, setActiveFormat] = useState<
     "hex" | "rgb" | "hsl" | "oklch"
   >("oklch");
+
+  const { recentColours, addRecentColour } = useRecentColors();
 
   function updateColour(colour: Partial<Oklch>) {
     setCurrentColour((prevState) => {
@@ -128,6 +131,7 @@ function App() {
     navigator.clipboard
       .writeText(currentColorString)
       .then((r) => console.log(r)); // add toast notification on success
+    addRecentColour(currentColour);
   }
 
   return (
@@ -303,7 +307,11 @@ function App() {
               </div>
             </div>
             <div className="flex flex-grow" />
-            <ColourPaletteTabs currentColour={currentColour} />
+            <ColourPaletteTabs
+              currentColour={currentColour}
+              recentColours={recentColours}
+              onColourSelect={updateColour}
+            />
           </div>
         </div>
       </div>
