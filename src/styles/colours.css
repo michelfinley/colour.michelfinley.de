@@ -1,0 +1,13 @@
+@theme inline static {
+    --color-*: initial;
+
+    --color-blue-500: oklch(0.5 0.17 256);
+
+    --color-contrast-grey: oklch(0.25 0 0);
+
+    --color-white: oklch(0.95 0 0);
+    --color-black: oklch(0.06 0 0);
+
+    --color-error: oklch(0.75 0.2 30);
+    --color-success: oklch(0.75 0.2 140);
+}
