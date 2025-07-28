@@ -1,4 +1,12 @@
-import { type ChangeEvent, useEffect, useState } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 import {
   nearestNamedColour,
@@ -18,6 +26,10 @@ import { capitalize, getContrastColour } from "./utils.tsx";
 import { ColourPaletteTabs } from "./components/ColourPaletteTabs.tsx";
 import { useRecentColours } from "./hooks/useRecentColours.tsx";
 import { useColourPalette } from "./hooks/useColourPalette.tsx";
+import {
+  NotificationContext,
+  type NotificationData,
+} from "./context/NotificationContextDef.tsx";
 
 function App() {
   const [currentColour, setCurrentColour] = useState<Oklch>(randomOklch());
@@ -50,11 +62,46 @@ function App() {
     document.title = `${capitalize(nearestNamedColour(currentColour))}`;
   }, [currentColour]);
 
+  const resetCopyAnimation = () => {
+    const element = document.getElementById("copy-animation");
+    if (element) {
+      element.style.animation = "none";
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      element.offsetHeight; // triggers reflow (https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
+      element.style.animation = "";
+    }
+  };
+
+  const setNotification = useContext(NotificationContext) as Dispatch<
+    SetStateAction<NotificationData | null>
+  >;
+
+  const [copyAnimationPlaying, setCopyAnimationPlaying] =
+    useState<boolean>(false);
+  const copyAnimationTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
   function copyToClipboard() {
-    navigator.clipboard
-      .writeText(currentColourString)
-      .then((r) => console.log(r)); // add toast notification on success
     addRecentColour(currentColour);
+
+    clearTimeout(copyAnimationTimeoutRef.current);
+    resetCopyAnimation();
+    setCopyAnimationPlaying(true);
+    copyAnimationTimeoutRef.current = setTimeout(function () {
+      setCopyAnimationPlaying(false);
+    }, 900);
+    try {
+      navigator.clipboard.writeText(currentColourString).then(() =>
+        setNotification({
+          type: "success",
+          text: "Copied to clipboard",
+        }),
+      );
+    } catch {
+      setNotification({
+        type: "error",
+        text: "Could not copy to clipboard",
+      });
+    }
   }
 
   return (
@@ -169,9 +216,17 @@ function App() {
                         </span>
                       </div>
                       <button
-                        className="ml-2 cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out hover:bg-white/15"
+                        className="relative ml-2 cursor-pointer rounded-md p-2 transition-colors duration-200 ease-in-out hover:bg-white/15"
                         onClick={copyToClipboard}
                       >
+                        {copyAnimationPlaying ? (
+                          <div
+                            className="absolute top-0 left-0 h-full w-full animate-ping rounded-md bg-white/15"
+                            id="copy-animation"
+                          />
+                        ) : (
+                          ""
+                        )}
                         <Copy className="h-5 w-5" />
                       </button>
                     </div>

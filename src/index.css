@@ -1,6 +1,7 @@
 @import "./styles/fonts/NotoSans.css";
 
 @import "./styles/colours.css";
+@import "./styles/animations.css";
 
 @import "tailwindcss";
 

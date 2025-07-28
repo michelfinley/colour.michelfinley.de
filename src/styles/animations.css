@@ -1,0 +1,25 @@
+@theme {
+    --animate-slide-in-out: slide-in 0.2s, slide-out 0.2s 2.5s;
+
+    @keyframes slide-in {
+        from {
+            margin-bottom: 0;
+            opacity: 0;
+        }
+        to {
+            margin-bottom: 2rem;
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-out {
+        from {
+            margin-bottom: 2rem;
+            opacity: 1;
+        }
+        to {
+            margin-bottom: 0;
+            opacity: 0;
+        }
+    }
+}
